@@ -14,7 +14,11 @@ module.exports = {
       },
     },
   },
+  darkMode: 'class',
   plugins: [
     require('daisyui')
   ],
+  daisyui: {
+    theme: ['light']
+  }
 };
