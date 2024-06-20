@@ -2,7 +2,7 @@
 
 import axios from "axios"
 
-export const api_get = async (base_url = process.env.API_URL, url = '/v1') => {
+export const api_get = async ( url = '/v1', base_url = process.env.API_URL) => {
     try {
         const response = await axios.get(`${base_url}${url}`, {
             headers: {
@@ -10,14 +10,20 @@ export const api_get = async (base_url = process.env.API_URL, url = '/v1') => {
             }
         })
 
-        return response.data
+        return {
+            success: true,
+            data: response.data
+        }
     } catch (error) {
         console.log(error)
-        return error.response.data
+        return {
+            success: false,
+            message: error.response.data.message.error
+        }
     }
 }
 
-export const api_post = async (base_url = process.env.API_URL, url = '/v1', payload) => {
+export const api_post = async ( url = '/v1', payload, base_url = process.env.API_URL) => {
     try {
         const response = await axios.post(`${base_url}${url}`, payload, {
             headers: {
@@ -32,7 +38,7 @@ export const api_post = async (base_url = process.env.API_URL, url = '/v1', payl
     }
 }
 
-export const api_put = async (base_url = process.env.API_URL, url = '/v1', payload) => {
+export const api_put = async (url = '/v1', payload, base_url = process.env.API_URL) => {
     try {
         const response = await axios.put(`${base_url}${url}`, payload, {
             headers: {
@@ -47,7 +53,7 @@ export const api_put = async (base_url = process.env.API_URL, url = '/v1', paylo
     }
 }
 
-export const api_delete = async (base_url = process.env.API_URL, url = '/v1', payload) => {
+export const api_delete = async (url = '/v1', payload, base_url = process.env.API_URL) => {
     try {
         const response = await axios({
             method: 'DELETE',
