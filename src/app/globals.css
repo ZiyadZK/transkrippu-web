@@ -32,9 +32,17 @@ body {
   }
 }
 
-/* *{
-  -ms-overflow-style: none;
+* {
+  scrollbar-width: none;
+  scrollbar-color: #Ffffff #181818;
 }
-::-webkit-scrollbar {
+
+.no-scroll::-webkit-scrollbar {
   display: none;
-} */
+}
+
+.no-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
