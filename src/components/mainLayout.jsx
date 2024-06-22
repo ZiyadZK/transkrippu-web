@@ -156,9 +156,7 @@ export default function MainLayoutPage({ children }) {
                     )}
                 </div>
                 <div className="px-2 md:px-10 pt-2 md:pt-5 pb-10 relative overflow-auto w-full h-screen no-scrollbar">
-                    <div className="p-5 border dark:border-zinc-800 bg-white dark:bg-zinc-900 md:rounded-xl rounded-md">
-                        {children}
-                    </div>
+                    {children}
                 </div>
             </div> 
             <div className="drawer-side">
