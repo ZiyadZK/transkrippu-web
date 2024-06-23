@@ -3,9 +3,12 @@
 import MainLayoutPage from "@/components/mainLayout"
 import { faAnglesLeft, faAnglesRight, faCheckSquare, faDownload, faEdit, faFile, faFilter, faHandPointUp, faHandPointer, faPlus, faPowerOff, faPrint, faSave, faSearch, faTrash, faTriangleExclamation, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { LineChart } from "@mui/x-charts"
+import { useRef } from "react"
 
 export default function NilaiPage() {
+
+    const ref_modal_tambah = useRef(null)
+
     return (
         <MainLayoutPage>
             <div className="p-5 border dark:border-zinc-800 bg-white dark:bg-zinc-900 md:rounded-xl rounded-md">
@@ -184,10 +187,116 @@ export default function NilaiPage() {
                 <hr className="my-3 dark:opacity-10" />
                 <div className="flex md:items-center md:justify-between flex-col md:flex-row gap-2">
                     <div className="flex items-center gap-2 w-full">
-                        <button type="button" className="w-full md:w-fit px-3 py-2 rounded border dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex justify-center items-center gap-3 font-medium ease-out duration-300">
+                        <button type="button" onClick={() => document.getElementById('tambah_nilai').showModal()} className="w-full md:w-fit px-3 py-2 rounded border dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex justify-center items-center gap-3 font-medium ease-out duration-300">
                             <FontAwesomeIcon icon={faPlus} className="w-3 h-3 text-inherit opacity-70" />
                             Tambah Nilai
                         </button>
+                        <dialog ref={ref_modal_tambah} id="tambah_nilai" className="modal bg-gradient-to-t dark:from-zinc-950 from-zinc-50">
+                            <div className="modal-box bg-white dark:bg-zinc-900 rounded  border dark:border-zinc-800 md:max-w-[900px]">
+                                <form method="dialog">
+                                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                </form>
+                                <h3 className="font-bold text-lg">Tambah Nilai</h3>
+                                <hr className="my-1 opacity-0" />
+                                <p className="opacity-70">
+                                    Nilai dibawah ini ditujukan untuk <span className="font-bold opacity-100">Ziyad Jahizh K</span>
+                                </p>
+                                <hr className="my-3 dark:opacity-10" />
+                                <div className="flex flex-col md:flex-row gap-2 md:gap-5">
+                                    <div className="w-full md:w-1/3">
+                                        <input type="text" className="w-full px-2 py-1 rounded-md border dark:border-zinc-700 dark:bg-zinc-800" placeholder="Cari dan Pilih Mata Pelajaran" />
+                                        <hr className="my-1 opacity-0" />
+                                        <div className="relative w-full space-y-1 max-h-[200px] overflow-auto">
+                                            {Array.from({ length: 15}).map((_, index) => (
+                                                <div key={index} className="p-3 rounded-md border dark:border-zinc-700 hover:border-zinc-700 dark:hover:border-zinc-400 ease-out duration-300 flex items-center justify-between">
+                                                    <p>
+                                                        Matematika
+                                                    </p>
+                                                    <input type="radio" name="radio_tambah_nilai_mapel" className="cursor-pointer radio radio-xs border dark:border-zinc-100" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="w-full md:w-2/3">
+                                        <div className="divide-y divide-zinc-300 dark:divide-zinc-700 w-full">
+                                            <div className="flex flex-col md:flex-row md:items-center gap-1 w-full pt-1 pb-3">
+                                                <p className="w-full md:w-1/3 opacity-70">
+                                                    ID Mata Pelajaran
+                                                </p>
+                                                <p className="w-full md:w-2/3">
+                                                    1
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col md:flex-row md:items-center gap-1 w-full  py-3">
+                                                <p className="w-full md:w-1/3 opacity-70">
+                                                    Nama Mata Pelajaran
+                                                </p>
+                                                <p className="w-full md:w-2/3">
+                                                    Bahasa Indonesia
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col md:flex-row md:items-center gap-1 w-full  py-3">
+                                                <p className="w-full md:w-1/3 opacity-70">
+                                                    Kategori Mata Pelajaran
+                                                </p>
+                                                <p className="w-full md:w-2/3">
+                                                    ABC ABC ABAC ABC ACBA
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-6 *:p-2 border dark:border-zinc-700 divide-y dark:divide-zinc-700">
+                                            <div className="col-span-6 flex justify-center items-center font-bold">
+                                                Semester
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center font-bold">
+                                                1
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center font-bold">
+                                                2
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center font-bold">
+                                                3
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center font-bold">
+                                                4
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center font-bold">
+                                                5
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center font-bold">
+                                                6
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-6 divide-x dark:divide-zinc-700 border-x border-b dark:border-zinc-700">
+                                            <div className="col-span-1 flex justify-center items-center">
+                                                <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center">
+                                                <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center">
+                                                <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center">
+                                                <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center">
+                                                <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                            </div>
+                                            <div className="col-span-1 flex justify-center items-center">
+                                                <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                            </div>
+                                        </div>
+                                        <hr className="my-1 opacity-0" />
+                                        <button type="button" className="px-3 py-2 rounded-md flex items-center gap-3 w-full md:w-fit justify-center bg-green-500 hover:bg-green-400 focus:bg-green-600 text-white">
+                                            <FontAwesomeIcon icon={faSave} className="w-3 h-3 text-inherit" />
+                                            Simpan
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </dialog>
                         <button type="button" className="w-full md:w-fit px-3 py-2 rounded border dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex justify-center items-center gap-3 font-medium ease-out duration-300">
                             <FontAwesomeIcon icon={faPrint} className="w-3 h-3 text-inherit opacity-70" />
                             Print
@@ -286,9 +395,101 @@ export default function NilaiPage() {
                                 <button type="button" className="w-6 h-6 rounded border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex md:hidden items-center justify-center hover:border-blue-500 dark:hover:border-blue-500/50 hover:bg-blue-100 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-500 ease-out duration-200">
                                     <FontAwesomeIcon icon={faFile} className="w-3 h-3 text-inherit" />
                                 </button>
-                                <button type="button" className="w-6 h-6 rounded border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:border-amber-500 dark:hover:border-amber-500/50 hover:bg-amber-100 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500 ease-out duration-200">
+                                <button type="button" onClick={() => document.getElementById(`ubah_nilai_${index}`).showModal()} className="w-6 h-6 rounded border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:border-amber-500 dark:hover:border-amber-500/50 hover:bg-amber-100 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500 ease-out duration-200">
                                     <FontAwesomeIcon icon={faEdit} className="w-3 h-3 text-inherit" />
                                 </button>
+                                <dialog id={`ubah_nilai_${index}`} className="modal bg-gradient-to-t dark:from-zinc-950 from-zinc-50">
+                                    <div className="modal-box bg-white dark:bg-zinc-900 rounded  border dark:border-zinc-800 md:max-w-[700px]">
+                                        <form method="dialog">
+                                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                        </form>
+                                        <h3 className="font-bold text-lg">Ubah Nilai</h3>
+                                        <hr className="my-1 opacity-0" />
+                                        <p className="opacity-70">
+                                            Nilai dibawah ini ditujukan untuk <span className="font-bold opacity-100">Ziyad Jahizh K</span>
+                                        </p>
+                                        <hr className="my-3 dark:opacity-10" />
+                                        <div className="flex flex-col md:flex-row gap-2 md:gap-5">
+                                            <div className="w-full">
+                                                <div className="divide-y divide-zinc-300 dark:divide-zinc-700 w-full">
+                                                    <div className="flex flex-col md:flex-row md:items-center gap-1 w-full pt-1 pb-3">
+                                                        <p className="w-full md:w-1/3 opacity-70">
+                                                            ID Mata Pelajaran
+                                                        </p>
+                                                        <p className="w-full md:w-2/3">
+                                                            1
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex flex-col md:flex-row md:items-center gap-1 w-full  py-3">
+                                                        <p className="w-full md:w-1/3 opacity-70">
+                                                            Nama Mata Pelajaran
+                                                        </p>
+                                                        <p className="w-full md:w-2/3">
+                                                            Bahasa Indonesia
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex flex-col md:flex-row md:items-center gap-1 w-full  py-3">
+                                                        <p className="w-full md:w-1/3 opacity-70">
+                                                            Kategori Mata Pelajaran
+                                                        </p>
+                                                        <p className="w-full md:w-2/3">
+                                                            ABC ABC ABAC ABC ACBA
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-6 *:p-2 border dark:border-zinc-700 divide-y dark:divide-zinc-700">
+                                                    <div className="col-span-6 flex justify-center items-center font-bold">
+                                                        Semester
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center font-bold">
+                                                        1
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center font-bold">
+                                                        2
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center font-bold">
+                                                        3
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center font-bold">
+                                                        4
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center font-bold">
+                                                        5
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center font-bold">
+                                                        6
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-6 divide-x dark:divide-zinc-700 border-x border-b dark:border-zinc-700">
+                                                    <div className="col-span-1 flex justify-center items-center">
+                                                        <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center">
+                                                        <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center">
+                                                        <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center">
+                                                        <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center">
+                                                        <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                                    </div>
+                                                    <div className="col-span-1 flex justify-center items-center">
+                                                        <input type="text" className="w-full text-center p-2 bg-transparent" placeholder="...." />
+                                                    </div>
+                                                </div>
+                                                <hr className="my-1 opacity-0" />
+                                                <button type="button" className="px-3 py-2 rounded-md flex items-center gap-3 w-full md:w-fit justify-center bg-green-500 hover:bg-green-400 focus:bg-green-600 text-white">
+                                                    <FontAwesomeIcon icon={faSave} className="w-3 h-3 text-inherit" />
+                                                    Simpan
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </dialog>
                                 <button type="button" className="w-6 h-6 rounded border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:border-red-500 dark:hover:border-red-500/50 hover:bg-red-100 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-500 ease-out duration-200">
                                     <FontAwesomeIcon icon={faTrash} className="w-3 h-3 text-inherit" />
                                 </button>
