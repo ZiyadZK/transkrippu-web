@@ -1,7 +1,7 @@
 'use client'
 
 import MainLayoutPage from "@/components/mainLayout"
-import { faAnglesLeft, faAnglesRight, faCheckSquare, faEdit, faFile, faPlus, faPowerOff, faSave, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons"
+import { faAnglesLeft, faAnglesRight, faCheckSquare, faEdit, faFile, faFilter, faPlus, faPowerOff, faSave, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export default function MataPelajaranPage() {
@@ -92,6 +92,57 @@ export default function MataPelajaranPage() {
                         </div>
                     </dialog>
                     <hr className="my-5 dark:opacity-10" />
+                    <div className="flex items-center gap-3">
+                        <FontAwesomeIcon icon={faFilter} className="w-3 h-3 text-inherit" />
+                        Filter Data
+                    </div>
+                    <hr className="my-1 opacity-0" />
+                    <div className="flex md:flex-row flex-col gap-3">
+                        <FontAwesomeIcon icon={faFilter} className="w-3 h-3 text-inherit opacity-0 hidden md:block" />
+                        <div className="space-y-3 w-full">
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Kategori
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Induk
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Status
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        Aktif
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        Tidak Aktif
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <hr className="my-5 dark:opacity-10" />
                     <div className="relative overflow-auto w-full max-h-[400px] text-xs">
                         <div className="grid grid-cols-12 p-3 rounded-lg border dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 sticky top-0 mb-2">
                             <div className="col-span-7 md:col-span-2 flex items-center gap-3">
@@ -114,11 +165,14 @@ export default function MataPelajaranPage() {
                                 <input type="text" className="w-full dark:bg-zinc-900 bg-white px-2 py-1 rounded border dark:border-zinc-700" placeholder="Cari disini" />
                             </div>
                         </div>
-                        {Array.from({ length: 50 }).map((_, index) => (
+                        {Array.from({ length: 10 }).map((_, index) => (
                             <div key={index} className="grid grid-cols-12 p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 ease-out duration-300">
                                 <div className="col-span-7 md:col-span-2 flex items-center gap-3">
                                     <input type="checkbox" className="cursor-pointer" />
                                     Bahasa Indonesia
+                                    <kbd className="kbd kbd-xs dark:bg-zinc-800 border dark:border-zinc-700">
+                                        1
+                                    </kbd>
                                 </div>
                                 <div className="col-span-2 hidden md:flex items-center gap-3">
                                     Muatan Nasional
