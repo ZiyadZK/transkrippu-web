@@ -24,6 +24,18 @@ export default function MataPelajaranPage() {
                                 <div className="w-full divide-y h-fit dark:divide-zinc-800 ">
                                     <div className="flex items-center gap-2 flex-col md:flex-row px-2 py-3">
                                         <p className="w-full md:w-1/3 opacity-70">
+                                            Jurusan
+                                        </p>
+                                        <div className="w-full md:w-2/3">
+                                            <select className="select select-bordered w-full select-sm dark:bg-zinc-800 bg-zinc-100">
+                                                <option value={''} disabled >-- Pilih Mata Pelajaran --</option>
+                                                <option value="Operator">Operator</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-col md:flex-row px-2 py-3">
+                                        <p className="w-full md:w-1/3 opacity-70">
                                             Nama
                                         </p>
                                         <div className="w-full md:w-2/3">
@@ -278,6 +290,18 @@ export default function MataPelajaranPage() {
                                             <hr className="my-2 opacity-0" />
                                             <div className="flex flex-col md:flex-row gap-2">
                                                 <div className="w-full divide-y h-fit dark:divide-zinc-800 ">
+                                                    <div className="flex items-center gap-2 flex-col md:flex-row px-2 py-3">
+                                                        <p className="w-full md:w-1/3 opacity-70">
+                                                            Jurusan
+                                                        </p>
+                                                        <div className="w-full md:w-2/3">
+                                                            <select className="select select-bordered w-full select-sm dark:bg-zinc-800 bg-zinc-100">
+                                                                <option value={''} disabled >-- Pilih Mata Pelajaran --</option>
+                                                                <option value="Operator">Operator</option>
+                                                                <option value="Admin">Admin</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                     <div className="flex items-center gap-2 flex-col md:flex-row px-2 py-3">
                                                         <p className="w-full md:w-1/3 opacity-70">
                                                             Nama
