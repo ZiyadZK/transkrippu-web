@@ -62,7 +62,7 @@ export default function MataPelajaranPage() {
                                     </div>
                                     <div className="flex items-center gap-2 flex-col md:flex-row px-2 py-3">
                                         <p className="w-full md:w-1/3 opacity-70">
-                                            Apakah Mata Pelajaran?
+                                            Memiliki Daftar Nilai?
                                         </p>
                                         <div className="w-full md:w-2/3 flex items-center gap-3">
                                             Tidak
