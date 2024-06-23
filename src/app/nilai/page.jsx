@@ -1,7 +1,7 @@
 'use client'
 
 import MainLayoutPage from "@/components/mainLayout"
-import { faAnglesLeft, faAnglesRight, faCheckSquare, faDownload, faEdit, faFile, faHandPointUp, faHandPointer, faPlus, faPowerOff, faPrint, faSave, faSearch, faTrash, faTriangleExclamation, faXmark } from "@fortawesome/free-solid-svg-icons"
+import { faAnglesLeft, faAnglesRight, faCheckSquare, faDownload, faEdit, faFile, faFilter, faHandPointUp, faHandPointer, faPlus, faPowerOff, faPrint, faSave, faSearch, faTrash, faTriangleExclamation, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { LineChart } from "@mui/x-charts"
 
@@ -14,11 +14,76 @@ export default function NilaiPage() {
                         <FontAwesomeIcon icon={faDownload} className="w-3 h-3 text-inherit opacity-70" />
                         Import
                     </button>
+                    <hr className="my-5 dark:opacity-10" />
+                    <div className="flex items-center gap-3">
+                        <FontAwesomeIcon icon={faFilter} className="w-3 h-3 text-inherit" />
+                        Filter Data
+                    </div>
+                    <hr className="my-1 opacity-0" />
+                    <div className="flex md:flex-row flex-col gap-3">
+                        <FontAwesomeIcon icon={faFilter} className="w-3 h-3 text-inherit opacity-0 hidden md:block" />
+                        <div className="space-y-3 w-full">
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Kelas
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Jurusan
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Rombel
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        Aktif
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        Tidak Aktif
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
+                                    Tahun Lulus
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        Aktif
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        Tidak Aktif
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
                     <hr className="my-3 dark:opacity-10" />
                     <div className="p-3 rounded-lg border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
                         
                         <div className="grid grid-cols-12">
-                            <div className="col-span-7 md:col-span-2 flex items-center gap-3">
+                            <div className="col-span-7 md:col-span-4 flex items-center gap-3">
+                                <input type="checkbox" />
                                 Nama Siswa
                             </div>
                             <div className="col-span-2 hidden md:flex items-center">
@@ -28,10 +93,7 @@ export default function NilaiPage() {
                                 Kelas
                             </div>
                             <div className="hidden md:flex items-center col-span-2">
-                                Tahun Masuk
-                            </div>
-                            <div className="hidden md:flex items-center col-span-2">
-                                Tahun Keluar
+                                Tahun Lulus
                             </div>
                             <div className="col-span-5 md:col-span-2 flex items-center">
                                 <input type="text" className="w-full px-2 py-1 rounded dark:bg-zinc-700 bg-white border dark:border-zinc-600" placeholder="Cari" />
@@ -42,7 +104,8 @@ export default function NilaiPage() {
                     <div className="py-3 relative w-full overflow-auto max-h-[500px]">
                         {Array.from({ length: 10}).map((_, index) => (
                             <div key={index} className="grid grid-cols-12 p-3 w-full dark:hover:bg-zinc-800 hover:bg-zinc-100 rounded group">
-                                <div className="col-span-7 md:col-span-2 flex items-center gap-3">
+                                <div className="col-span-7 md:col-span-4 flex items-center gap-3">
+                                    <input type="checkbox" />
                                     Ziyad Jahizh Kartiwa
                                 </div>
                                 <div className="col-span-2 hidden md:flex items-center">
@@ -50,9 +113,6 @@ export default function NilaiPage() {
                                 </div>
                                 <div className="col-span-2 hidden md:flex items-center">
                                     XII TKJ 2
-                                </div>
-                                <div className="col-span-2 hidden md:flex items-center">
-                                    2021
                                 </div>
                                 <div className="col-span-2 hidden md:flex items-center">
                                     2022
