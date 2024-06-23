@@ -3,6 +3,7 @@
 import MainLayoutPage from "@/components/mainLayout"
 import { faAnglesLeft, faAnglesRight, faCheckSquare, faDownload, faEdit, faFile, faHandPointUp, faHandPointer, faPlus, faPowerOff, faPrint, faSave, faSearch, faTrash, faTriangleExclamation, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { LineChart } from "@mui/x-charts"
 
 export default function NilaiPage() {
     return (
@@ -116,7 +117,7 @@ export default function NilaiPage() {
             </div>
             <hr className="my-3 opacity-0" />
 
-            <div className="p-5 border dark:border-zinc-800 bg-white dark:bg-zinc-900 md:rounded-xl rounded-md text-xs">
+            <div className="p-5 border relative dark:border-zinc-800 bg-white dark:bg-zinc-900 md:rounded-xl rounded-md text-xs">
                 <h1 className="text-xl md:text-3xl font-medium">
                     ZIYAD JAHIZH KARTIWA
                 </h1>
