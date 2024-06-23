@@ -152,6 +152,9 @@ export default function MainLayoutPage({ children }) {
                                     
                                 </Link>
                             ))}
+                            <Link href={'/ceknilai'} className="px-4 py-2 rounded-md text-xs bg-blue-500 flex-shrink-0 font-medium text-white hover:shadow-lg hover:shadow-cyan-500/40 ease-out duration-200">
+                                Cek Nilai untuk Siswa
+                            </Link>
                         </div>
                     )}
                 </div>
@@ -159,14 +162,41 @@ export default function MainLayoutPage({ children }) {
                     {children}
                 </div>
             </div> 
-            <div className="drawer-side">
+            <div className="drawer-side md:hidden">
                 <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-                <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-                {/* Sidebar content here */}
-                <li><a>Sidebar Item 1</a></li>
-                <li><a>Sidebar Item 2</a></li>
-                
-                </ul>
+                <div className="p-5 w-80 min-h-full bg-white dark:bg-zinc-900 dark:text-zinc-100 text-zinc-800">
+                    <hr className="my-12 opacity-0" />
+                    <p>
+                        Ziyad Jahizh Kartiwa
+                    </p>
+                    <p className="text-xs opacity-40">
+                        kakangtea74@gmail.com
+                    </p>
+                    <hr className="my-1 opacity-0" />
+                    <p className="px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-500 w-fit">
+                        Admin
+                    </p>
+                    <hr className="my-5 dark:opacity-10" />
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                            <p className="opacity-60">
+                                Tema
+                            </p>
+                            <button type="button" onClick={() => toggleTheme()} className="rounded-lg border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300 flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
+                                <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
+                            </button>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <p className="opacity-60">
+                                Keluar
+                            </p>
+                            <button type="button" onClick={() => submitLogout()} className="rounded-lg border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
+                                <FontAwesomeIcon icon={faSignOut} className="w-4 h-4 text-inherit transition-all duration-300" />
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     );
