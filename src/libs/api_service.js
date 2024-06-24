@@ -31,10 +31,23 @@ export const api_post = async ( url = '/v1', payload, base_url = process.env.API
             }
         })
 
-        return response.data
+        if(response.status === 200) {
+            return {
+                success: true,
+                message: response.data.message
+            }
+        }else{
+            return {
+                success: false,
+                message: response.data.message
+            }
+        }
     } catch (error) {
         console.log(error)
-        return error.response.data
+        return {
+            success: false,
+            message: error.response.data.message
+        }
     }
 }
 
@@ -46,10 +59,23 @@ export const api_put = async (url = '/v1', payload, base_url = process.env.API_U
             }
         })
 
-        return response.data
+        if(response.status === 200) {
+            return {
+                success: true,
+                message: response.data.message
+            }
+        }else{
+            return {
+                success: false,
+                message: response.data.message
+            }
+        }
     } catch (error) {
         console.log(error)
-        return error.response.data
+        return {
+            success: false,
+            message: error.response.data.message
+        }
     }
 }
 
@@ -64,10 +90,23 @@ export const api_delete = async (url = '/v1', payload, base_url = process.env.AP
             }
         })
 
-        return response.data
+        if(response.status === 200) {
+            return {
+                success: true,
+                message: response.data.message
+            }
+        }else{
+            return {
+                success: false,
+                message: response.data.message
+            }
+        }
     } catch (error) {
         console.log(error)
-        return error.response.data
+        return {
+            success: false,
+            message: error.response.data.message
+        }
     }
 }
 
