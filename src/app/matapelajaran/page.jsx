@@ -114,6 +114,19 @@ export default function MataPelajaranPage() {
                         <div className="space-y-3 w-full">
                             <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
                                 <div className="w-full md:w-1/6 opacity-60">
+                                    Jurusan
+                                </div>
+                                <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                    <button type="button" className="flex flex-shrink-0 items-center w-fit gap-3 px-3 py-2 rounded-md hover:bg-zinc-800">
+                                        TEST 123 INI KATEGORI
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <div className="w-full md:w-1/6 opacity-60">
                                     Kategori
                                 </div>
                                 <div className="w-full md:w-5/6 flex items-center gap-2 relative overflow-auto">
@@ -167,8 +180,11 @@ export default function MataPelajaranPage() {
                             <div className="col-span-2 hidden md:flex items-center gap-3">
                                 Induk
                             </div>
-                            <div className="col-span-2 hidden md:flex items-center gap-3">
-                                Mata Pelajaran
+                            <div className="col-span-1 hidden md:flex items-center gap-3">
+                                Memiliki Nilai
+                            </div>
+                            <div className="col-span-1 hidden md:flex items-center gap-3">
+                                Jurusan
                             </div>
                             <div className="col-span-2 hidden md:flex items-center gap-3">
                                 Status
@@ -192,11 +208,14 @@ export default function MataPelajaranPage() {
                                 <div className="col-span-2 hidden md:flex items-center gap-3">
                                     Sendiri
                                 </div>
-                                <div className="col-span-2 hidden md:flex items-center gap-1">
+                                <div className="col-span-1 hidden md:flex items-center gap-1">
                                     <button type="button" className="px-2 py-1 rounded-full bg-red-500 dark:bg-red-500/10 text-white dark:text-red-400 flex items-center justify-center gap-2">
                                         <FontAwesomeIcon icon={faXmark} className="w-3 h-3 text-inherit" />
                                         Tidak
                                     </button>
+                                </div>
+                                <div className="col-span-1 hidden md:flex items-center gap-1">
+                                    TKJ
                                 </div>
                                 <div className="col-span-2 hidden md:flex items-center gap-3">
                                     <button type="button" className="px-2 py-1 rounded-full bg-red-500 dark:bg-red-500/10 text-white dark:text-red-400 flex items-center justify-center gap-2">
