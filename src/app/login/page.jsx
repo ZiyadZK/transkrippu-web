@@ -1,5 +1,7 @@
 'use client'
 
+import { toast } from "@/libs/toast";
+import { M_Akun_login } from "@/models/M_Akun";
 import { faEnvelope, faEye } from "@fortawesome/free-regular-svg-icons";
 import { faKey, faSignIn, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +19,25 @@ export default function LoginPage() {
         email: '', password: '', rememberMe: false
     })
 
+    const submitLogin = async (e) => {
+        e.preventDefault()
+
+        setLoginLoading(true)
+        const response = await M_Akun_login(loginForm['email'], loginForm['password'], loginForm['rememberMe'] ? 5 : 1)
+        if(response.success) {
+            router.push('/')
+        }else{
+            setLoginLoading(false)
+            toast.fire({
+                title: 'Gagal Login!',
+                text: response.message,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true
+            })
+        }
+    }
+
     return (
         <div className="w-full h-screen relative overflow-hidden bg-zinc-50">
             <div className="absolute top-0 left-0 w-full flex justify-center z-[1]">
@@ -26,7 +47,7 @@ export default function LoginPage() {
                 <div className="w-[10rem] h-[10rem] md:w-[30rem] md:h-[30rem] rounded-full bg-violet-500 blur-3xl md:blur-[12rem] translate-y-[50%]"></div>
             </div>
             <div className="absolute top-0 left-0 w-full h-screen flex flex-col md:flex-row justify-between md:items-center md:justify-center z-[2]">
-                <form className="w-full md:w-1/3 bg-white h-full md:h-fit p-5 md:rounded-2xl md:shadow-2xl flex md:block flex-col md:flex-row justify-between md:items-center md:justify-center">
+                <form onSubmit={submitLogin} className="w-full md:w-1/3 bg-white h-full md:h-fit p-5 md:rounded-2xl md:shadow-2xl flex md:block flex-col md:flex-row justify-between md:items-center md:justify-center">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Image src={'/logo-sekolah-2.png'} width={20} height={20} alt="Logo Sekolah" />
