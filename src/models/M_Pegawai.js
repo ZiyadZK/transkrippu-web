@@ -7,7 +7,7 @@ export const M_Pegawai_getAll = async () => {
 
     return {
         success: response.success,
-        data: response.data.data,
+        data: response.data,
         message: response.message
     }
 }

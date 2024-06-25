@@ -10,15 +10,22 @@ export const api_get = async ( url = '/v1', base_url = process.env.API_URL) => {
             }
         })
 
-        return {
-            success: true,
-            data: response.data
+        if(response.status === 200) {
+            return {
+                success: true,
+                data: response.data.data,
+                message: response.data.message
+            }
+        }else{
+            return {
+                success: false,
+                message: response.data.message
+            }
         }
     } catch (error) {
-        console.log(error)
         return {
             success: false,
-            message: error.response.data.message.error
+            message: error.response.data.message
         }
     }
 }
