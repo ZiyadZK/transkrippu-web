@@ -1,6 +1,7 @@
 'use client'
 
 import { jakarta } from "@/libs/fonts";
+import { M_Akun_getUserdata, M_Akun_logout } from "@/models/M_Akun";
 import { faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
 import { faCog, faHouse, faLayerGroup, faSignOut, faStar, faTimeline, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const navLink = [
-    { url: '/matapelajaran', title: 'Mata Pelajaran', page: 'Data Mata Pelajaran', icon: faLayerGroup, role: ['Admin', 'Operator']},
+    { url: '/matapelajaran', title: 'Mata Pelajaran', page: 'Data Mata Pelajaran', icon: faLayerGroup, role: ['Admin']},
     { url: '/nilai', title: 'Nilai', page: 'Data Nilai', icon: faStar, role: ['Admin', 'Operator']},
     { url: '/akun', title: 'Akun', page: 'Data Akun', icon: faUserShield, role: ['Admin']},
     { url: '/riwayat', title: 'Riwayat', page: 'Data Riwayat', icon: faTimeline, role: ['Admin']},
@@ -31,8 +32,12 @@ export default function MainLayoutPage({ children }) {
     const [theme, setTheme] = useState('')
 
     const getLoggedAkun = async () => {
-        const userdata = await getLoggedUserdata()
-        setLoggedAkun(userdata)
+        const response = await M_Akun_getUserdata()
+        if(response.success) {
+            setLoggedAkun(response.data)
+        }else{
+            router.push('/login')
+        }
     }
 
     const getFilteredPath = () => {
@@ -66,9 +71,17 @@ export default function MainLayoutPage({ children }) {
     useEffect(() => {
         getFilteredPath()
         getTheme()
+        getLoggedAkun()
     }, [])
 
     const [hoveredPath, setHoveredPath] = useState(path)
+
+    const submitLogout = async () => {
+        const response = await M_Akun_logout()
+        if(response.success) {
+            router.push('/login')
+        }
+    }
 
     return (
         <div className={`drawer ${jakarta.className} dark:text-zinc-100 text-zinc-700 scrollbar-body`}>
@@ -92,36 +105,45 @@ export default function MainLayoutPage({ children }) {
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className="hidden md:flex items-center gap-3 ">
-                                <p className="px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-500">
-                                    Admin
-                                </p>
-                                <article className="text-end">
-                                    <p className="text-xs">
-                                        kakangtea74@gmail.com
-                                    </p>
-                                    <p className="text-xs opacity-50">
-                                        Ziyad
-                                    </p>
-                                </article>
+                        {loggedAkun && (
+                            <div className="flex items-center gap-3">
+                                <div className="hidden md:flex items-center gap-3 ">
+                                    {loggedAkun['role_akun'] === 'Admin' && (
+                                        <p className="px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-500">
+                                            Admin
+                                        </p>
+                                    )}
+                                    {loggedAkun['role_akun'] === 'Operator' && (
+                                        <p className="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-500">
+                                            Operator
+                                        </p>
+                                    )}
+                                    <article className="text-end">
+                                        <p className="text-xs">
+                                            {loggedAkun['email_akun']}
+                                        </p>
+                                        <p className="text-xs opacity-50">
+                                            {loggedAkun['nama_akun']}
+                                        </p>
+                                    </article>
+                                </div>
+                                <button type="button" onClick={() => toggleTheme()} className="rounded-full border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300 hidden md:flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
+                                    <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
+                                </button>
+                                <label htmlFor="my-drawer" className="rounded-full border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 flex md:hidden items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 drawer-button">
+                                    <FontAwesomeIcon icon={faCog} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
+                                </label>
+                                <button type="button" onClick={() => submitLogout()} className="rounded-full border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 hidden md:flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
+                                    <FontAwesomeIcon icon={faSignOut} className="w-4 h-4 text-inherit transition-all duration-300" />
+                                </button>
                             </div>
-                            <button type="button" onClick={() => toggleTheme()} className="rounded-full border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300 hidden md:flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
-                                <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
-                            </button>
-                            <label htmlFor="my-drawer" className="rounded-full border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 flex md:hidden items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 drawer-button">
-                                <FontAwesomeIcon icon={faCog} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
-                            </label>
-                            <button type="button" onClick={() => submitLogout()} className="rounded-full border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 hidden md:flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
-                                <FontAwesomeIcon icon={faSignOut} className="w-4 h-4 text-inherit transition-all duration-300" />
-                            </button>
-                        </div>
+                        )}
                     </div>
                     {!filteredPath ? (
                         <div className="loading loading-spinner loading-sm text-zinc-400 py-4"></div>
                     ):(
                         <div className="flex items-center gap-2 overflow-auto relative w-full pb-2">
-                            {navLink.map((value, index) => (
+                            {loggedAkun && navLink.map((value, index) => value['role'].includes(loggedAkun.role_akun) && (
                                 <Link
                                     key={index}
                                     href={value.url}
@@ -164,39 +186,48 @@ export default function MainLayoutPage({ children }) {
             </div> 
             <div className="drawer-side md:hidden">
                 <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-                <div className="p-5 w-80 min-h-full bg-white dark:bg-zinc-900 dark:text-zinc-100 text-zinc-800">
-                    <hr className="my-12 opacity-0" />
-                    <p>
-                        Ziyad Jahizh Kartiwa
-                    </p>
-                    <p className="text-xs opacity-40">
-                        kakangtea74@gmail.com
-                    </p>
-                    <hr className="my-1 opacity-0" />
-                    <p className="px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-500 w-fit">
-                        Admin
-                    </p>
-                    <hr className="my-5 dark:opacity-10" />
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                            <p className="opacity-60">
-                                Tema
+                {loggedAkun && (
+                    <div className="p-5 w-80 min-h-full bg-white dark:bg-zinc-900 dark:text-zinc-100 text-zinc-800">
+                        <hr className="my-12 opacity-0" />
+                        <p>
+                            {loggedAkun['nama_akun']}
+                        </p>
+                        <p className="text-xs opacity-40">
+                            {loggedAkun['email_akun']}
+                        </p>
+                        <hr className="my-1 opacity-0" />
+                        {loggedAkun['role_akun'] === 'Admin' && (
+                            <p className="px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-500 w-fit">
+                                Admin
                             </p>
-                            <button type="button" onClick={() => toggleTheme()} className="rounded-lg border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300 flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
-                                <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
-                            </button>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="opacity-60">
-                                Keluar
+                        )}
+                        {loggedAkun['role_akun'] === 'Operator' && (
+                            <p className="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-500 w-fit">
+                                Operator
                             </p>
-                            <button type="button" onClick={() => submitLogout()} className="rounded-lg border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
-                                <FontAwesomeIcon icon={faSignOut} className="w-4 h-4 text-inherit transition-all duration-300" />
-                            </button>
-                        </div>
+                        )}
+                        <hr className="my-5 dark:opacity-10" />
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <p className="opacity-60">
+                                    Tema
+                                </p>
+                                <button type="button" onClick={() => toggleTheme()} className="rounded-lg border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300 flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
+                                    <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} className="w-4 h-4 text-inherit group-hover:-rotate-45 transition-all duration-300" />
+                                </button>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="opacity-60">
+                                    Keluar
+                                </p>
+                                <button type="button" onClick={() => submitLogout()} className="rounded-lg border w-8 h-8 dark:border-zinc-800 hover:bg-zinc-50 transition-all duration-300 dark:hover:bg-zinc-800 flex items-center justify-center group text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200">
+                                    <FontAwesomeIcon icon={faSignOut} className="w-4 h-4 text-inherit transition-all duration-300" />
+                                </button>
+                            </div>
 
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
