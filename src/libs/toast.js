@@ -5,5 +5,9 @@ export const toast = Swal.mixin({
     position: 'top-right',
     showConfirmButton: false,
     timer: 3000,
-    timerProgressBar: true
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.onmouseover = Swal.stopTimer
+        toast.onmouseleave = Swal.resumeTimer
+    }
 })
