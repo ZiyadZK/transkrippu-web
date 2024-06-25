@@ -2,7 +2,7 @@
 
 import MainLayoutPage from "@/components/mainLayout"
 import { toast } from "@/libs/toast"
-import { M_Akun_create, M_Akun_delete, M_Akun_getAll } from "@/models/M_Akun"
+import { M_Akun_create, M_Akun_delete, M_Akun_getAll, M_Akun_update } from "@/models/M_Akun"
 import { M_Pegawai_getAll } from "@/models/M_Pegawai"
 import { faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight, faCheckSquare, faDownload, faEdit, faFile, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -16,6 +16,18 @@ const formatForm = {
     email_akun: '',
     password_akun: '',
     role_akun: ''
+}
+
+const showModal = (id) => {
+    return {
+        show: (type) => {
+            if(type === 'show') {
+                document.getElementById(id).showModal()
+            }else{
+                document.getElementById(id).close()
+            }
+        }
+    }
 }
 
 export default function AkunPage() {
@@ -156,6 +168,62 @@ export default function AkunPage() {
         })
     }
 
+    const submitEditAkun = (e, modal, id_akun) => {
+        e.preventDefault()
+
+        showModal(modal).show('close')
+
+        const payload = {
+            email_akun: e.target[0].value,
+            password_akun: e.target[1].value,
+            role_akun: e.target[2].value
+        }
+
+        Swal.fire({
+            title: 'Sedang memproses data',
+            timer: 60000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: async () => {
+                const response = await M_Akun_update(id_akun, payload)
+
+                if(response.success) {
+                    setSelectedData([])
+                    setSelectAll(false)
+                    await getData()
+                    Swal.fire({
+                        title: 'Sukses',
+                        text: response.message,
+                        icon: 'success'
+                    })
+                }else{
+                    showModal(modal).show('show')
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: response.message,
+                        icon: 'error'
+                    })
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        let updatedData = data
+
+        if(searchFilter !== '') {
+            updatedData = updatedData.filter(value =>
+                value['nama_akun'].toLowerCase().includes(searchFilter.toLowerCase()) ||
+                value['email_akun'].toLowerCase().includes(searchFilter.toLowerCase()) ||
+                value['password_akun'].toLowerCase().includes(searchFilter.toLowerCase())
+            )
+        }
+
+        setFilteredData(updatedData)
+    }, [searchFilter])
+
     return (
         <MainLayoutPage>
             <div className="p-5 border dark:border-zinc-800 bg-white dark:bg-zinc-900 md:rounded-xl rounded-md">
@@ -288,7 +356,7 @@ export default function AkunPage() {
                                 Role
                             </div>
                             <div className="col-span-5 md:col-span-2 flex items-center gap-3">
-                                <input type="text" className="w-full dark:bg-zinc-900 bg-white px-2 py-1 rounded border dark:border-zinc-700" placeholder="Cari disini" />
+                                <input type="text" value={searchFilter} onChange={e => setSearchFilter(e.target.value)} className="w-full dark:bg-zinc-900 bg-white px-2 py-1 rounded border dark:border-zinc-700" placeholder="Cari disini" />
                             </div>
                         </div>
                         {loadingFetch['data'] !== 'fetched' && (
@@ -407,7 +475,7 @@ export default function AkunPage() {
                                             </form>
                                             <h3 className="font-bold text-lg">Ubah Akun</h3>
                                             <hr className="my-2 opacity-0" />
-                                            <div className="flex flex-col md:flex-row gap-2">
+                                            <form onSubmit={e => submitEditAkun(e, `edit_akun_${index}`, value['id_akun'])} className="flex flex-col md:flex-row gap-2">
                                                 <div className="w-full divide-y h-fit dark:divide-zinc-800 ">
                                                     <div className="flex items-center gap-2 flex-col md:flex-row px-2 py-3">
                                                         <p className="w-full md:w-1/3 opacity-50">
@@ -466,7 +534,7 @@ export default function AkunPage() {
                                                         </button>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </form>
                                         </div>
                                     </dialog>
                                     <button type="button" onClick={() => submitDeleteAkun(value['id_akun'])} className="w-6 h-6 rounded border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:border-red-500 dark:hover:border-red-500/50 hover:bg-red-100 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-500 ease-out duration-200">
