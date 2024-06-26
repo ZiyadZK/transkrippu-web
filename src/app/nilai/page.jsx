@@ -3,11 +3,16 @@
 import MainLayoutPage from "@/components/mainLayout"
 import { faAnglesLeft, faAnglesRight, faCheckSquare, faDownload, faEdit, faFile, faFilter, faHandPointUp, faHandPointer, faPlus, faPowerOff, faPrint, faSave, faSearch, faTrash, faTriangleExclamation, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 
 export default function NilaiPage() {
 
     const ref_modal_tambah = useRef(null)
+
+    const [dataSiswa, setDataSiswa] = useState([])
+    const [filterDataSiswa, setFilterDataSiswa] = useState({
+        kelas: [], jurusan: [], rombel: [], tahun_masuk: []
+    })
 
     return (
         <MainLayoutPage>

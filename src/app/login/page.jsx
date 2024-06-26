@@ -39,7 +39,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="w-full h-screen relative overflow-hidden bg-zinc-50">
+        <div className="w-full h-screen relative overflow-hidden bg-zinc-50 text-zinc-800">
             <div className="absolute top-0 left-0 w-full flex justify-center z-[1]">
                 <div className="w-[10rem] h-[10rem] md:w-[30rem] md:h-[30rem] rounded-full bg-red-500 blur-3xl md:blur-[12rem] -translate-y-[50%]"></div>
             </div>
