@@ -1,16 +1,17 @@
 'use client'
 
-import { jakarta } from "@/libs/fonts"
-import { faEdit, faFile, faMoon, faSearch, faStar, faSun } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { jakarta } from "@/libs/fonts";
+import { M_Akun_getUserdata, M_Akun_logout } from "@/models/M_Akun";
+import { faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
+import { faCog, faHouse, faLayerGroup, faSignOut, faStar, faTimeline, faUserShield } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-
-export default function CekNilaiPage() {
+export default function PublicMainLayoutPage({ children }) {
 
     const router = useRouter()
     const path = usePathname()
@@ -47,6 +48,8 @@ export default function CekNilaiPage() {
 
     const [hoveredTab, setHoveredTab] = useState(tab)
 
+    
+
     return (
         <div className={`drawer ${jakarta.className} dark:text-zinc-100 text-zinc-700 scrollbar-body`}>
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -71,11 +74,10 @@ export default function CekNilaiPage() {
                             </button>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3 relative overflow-auto pb-2">
+                    <div className="flex items-center gap-3 relative overflow-auto">
 
                         <button
                             type="button"
-                            onClick={() => setTab('tabel')}
                             className={`px-4 py-2 rounded-md flex-shrink-0 text-xs font-medium ${tab === 'tabel' ? 'text-zinc-800 dark:text-zinc-100' : 'text-zinc-400'} hover:text-zinc-700 dark:hover:text-zinc-200 relative no-underline duration-300 ease-in z-[100]`}
                             onMouseOver={() => setHoveredTab('tabel')}
                             onMouseLeave={() => setHoveredTab(tab)}
@@ -83,7 +85,7 @@ export default function CekNilaiPage() {
                             <span>
                                 Tabel Nilai
                             </span>
-                            {hoveredTab === 'tabel' && (
+                            {tab === 'tabel' && (
                                 <motion.div
                                     className="absolute bottom-0 left-0 h-full bg-zinc-100 dark:bg-zinc-800 rounded-md -z-10 text-zinc-700 dark:text-zinc-200"
                                     layoutId="navbar"
@@ -103,7 +105,6 @@ export default function CekNilaiPage() {
                         </button>
                         <button
                             type="button"
-                            onClick={() => setTab('grafik')}
                             className={`px-4 py-2 rounded-md flex-shrink-0 text-xs font-medium ${tab === 'grafik' ? 'text-zinc-800 dark:text-zinc-100' : 'text-zinc-400'} hover:text-zinc-700 dark:hover:text-zinc-200 relative no-underline duration-300 ease-in z-[100]`}
                             onMouseOver={() => setHoveredTab('grafik')}
                             onMouseLeave={() => setHoveredTab(tab)}
@@ -111,8 +112,7 @@ export default function CekNilaiPage() {
                             <span>
                                 Grafik Nilai
                             </span>
-                            {hoveredTab === 'grafik' && (
-                                
+                            {tab === 'grafik' && (
                                 <motion.div
                                     className="absolute bottom-0 left-0 h-full bg-zinc-100 dark:bg-zinc-800 rounded-md -z-10 text-zinc-700 dark:text-zinc-200"
                                     layoutId="navbar"
@@ -133,7 +133,7 @@ export default function CekNilaiPage() {
                     </div>
                 </div>
                 <div className="px-2 md:px-10 pt-2 md:pt-5 pb-10 relative overflow-auto w-full h-screen no-scrollbar">
-                    test
+                    {children}
                 </div>
             </div> 
             <div className="drawer-side md:hidden">
