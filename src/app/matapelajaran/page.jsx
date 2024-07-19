@@ -9,6 +9,7 @@ import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
+import { xlsx_getData, xlsx_getSheets } from "@/libs/excel"
 
 const formatForm = {
     jurusan_mapel: '',
@@ -18,8 +19,12 @@ const formatForm = {
     parent_from_id_mapel: '',
     is_mapel: false,
     aktif: false    
-
 }
+
+const allowedMimeType = [
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+]
 
 
 
@@ -282,223 +287,78 @@ export default function MataPelajaranPage() {
             }else{
                 setNamaSheet('')
                 setListSheet([])
-                setIsUploadedDataValid(false)
             }
         }else{
             setListSheet([])
         }
     }
 
-    const handleImportFile = async (e, modal) => {
+    const submitImportFile = async (e, modal) => {
         e.preventDefault()
 
-        const fileName = fileData.name
-        const fileExtension = fileName.split('.').pop()
-        setInfoFileData(state => ({...state,  ekstensi: fileExtension}))
-        setLoadingReadFormat('loading')
+        const fileData = e.target[0].files[0]
+        if(!allowedMimeType.includes(fileData.type)) {
+            return
+        }
 
-        if(fileExtension === 'xlsx') {
-            try {
-                const response = await readXLSXFile(fileData)
+        if(namaSheet === '') {
+            return
+        }
 
-                setInfoFileData(state => ({...state, jumlahData: response.data.length, jumlahKolom: Object.keys(response.data[0]).length}))
-                let isNotSimilar = false
-                Object.keys(response.data[0]).forEach(value => {
-                    if(Object.keys(formatForm).includes(value === false)) {
-                        if(isNotSimilar === false) {
-                            isNotSimilar = true
-                        }
+        document.getElementById(modal).close()
+
+        Swal.fire({
+            title: 'Sedang memproses data',
+            timer: 60000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            didOpen: async () => {
+                const responseImport = await xlsx_getData(fileData, namaSheet)
+                if(responseImport.success) {
+                    const data = responseImport.data
+                    const formattedData = data.map(value => ({
+                        ...value,
+                        is_mapel: value['is_mapel'] === 1 ? true : false,
+                        is_parent: value['is_parent'] === 1 ? true : false,
+                        aktif: value['aktif'] === 1 ? true : false,
+                    }))
+                    
+                    const response = await M_Matpel_create(formattedData)
+                    if(response.success) {
+                        await getDataMapel()
+                        Swal.fire({
+                            title: 'Sukses',
+                            text: 'Berhasil mengimport data mata pelajaran',
+                            icon: 'success',
+                            timer: 6000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        })
+                    }else{
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: 'Terdapat kesalahan disaat memproses data, hubungi Administrator',
+                            icon: 'error'
+                        }).then(() => {
+                            document.getElementById(modal).showModal()
+                        })
                     }
-                })
-
-                if(isNotSimilar) {
-                    setUploadedData(null)
-                    setUploadedFile(null)
-                    setLoadingReadFormat('fetched')
-                    document.getElementById(modal).close()
-                    return Swal.fire({
+                }else{
+                    Swal.fire({
                         title: 'Gagal',
-                        icon: 'error',
-                        message: 'Terdapat kolom yang tidak sesuai!'
+                        text: 'Terdapat kesalahan disaat memproses data, hubungi Administrator',
+                        icon: 'error'
                     }).then(() => {
                         document.getElementById(modal).showModal()
                     })
                 }
-
-                setUploadedData(() => {
-                    if(response.data.length < 50) {
-                        return {
-                            status: 'ready',
-                            dataArr: [
-                                {
-                                    status: 'ready',
-                                    statusText: `Data dari 1 sampai ${response.data.length}`,
-                                    data: response.data
-                                }
-                            ]
-                        }
-                    }
-
-                    const numBatches = Math.ceil(response.data.length / 50)
-                    return {
-                        status: 'ready',
-                        dataArr: () => {
-                            const batchList = []
-                            for(let i = 0; i < numBatches; i++) {
-                                const start = i * 50
-                                const end = Math.min(start + 50, response.data.length)
-                                const batch = response.data.slice(start, end)
-                                batchList.push({
-                                    status: 'ready',
-                                    statusText: `Data dari ${start} sampai ${batch.length}`,
-                                    data: batch
-                                })
-                            }
-                            return batchList
-                        }
-                    }
-                })
-                setUploadedFile(fileData)
-                setLoadingReadFormat('fetched')
-            } catch (error) {
-                console.log(error)
-                setUploadedFile(null)
-                setUploadedData([])
-
-                setLoadingReadFormat('fetched')
             }
-        }
-
-        if(fileExtension === 'csv') {
-            Papa.parse(fileData, {
-                worker: true,
-                header: true,
-                complete: async result => {
-                    const formattedData = result.data.map(row => {
-                        const newRow = {};
-                        Object.keys(row).forEach(key => {
-                            if(key === 'id_rombel') {
-                                newRow[key.toLowerCase()] = String(row[key].trim().replace(/\s+/g, ' '))
-                            }else if(key === 'tgl_lahir_siswa'){
-                                newRow[key.toLowerCase()] = `${row[key].split('/')[2]}-${row[key].split('/')[0]}-${row[key].split('/')[1]}`
-                            }else if(key === 'pekerjaan_ayah') {
-                                newRow[key.toLowerCase()] = typeof(row[key]) !== 'undefined' || row[key] !== '0' || row[key] !== 0 || row[key] !== '#N/A' ? (row[key] === 'DI RUMAH SAJA' ? 'TIDAK BEKERJA' : String(row[key])) : ''
-                            }else if(key === 'pekerjaan_ibu') {
-                                newRow[key.toLowerCase()] = typeof(row[key]) !== 'undefined' || row[key] !== '0' || row[key] !== 0 || row[key] !== '#N/A' ? (row[key] === 'DI RUMAH SAJA' ? 'TIDAK BEKERJA' : String(row[key])) : ''
-                            }else if(key === 'pekerjaan_wali') {
-                                newRow[key.toLowerCase()] = typeof(row[key]) !== 'undefined' || row[key] !== '0' || row[key] !== 0 || row[key] !== '#N/A' ? (row[key] === 'DI RUMAH SAJA' ? 'TIDAK BEKERJA' : String(row[key])) : ''
-                            }else{
-                                newRow[key.toLowerCase()] = row[key] === 0 || row[key] === '0' || typeof row[key] === 'undefined' || row[key] === '#N/A' ? '' : row[key];
-                            }
-                        });
-                        return newRow;
-                    });
-            
-                    setInfoFileData(state => ({
-                        ...state, 
-                        jumlahData: formattedData.length, 
-                        jumlahKolom: Object.keys(formattedData[0]).length
-                    }));
-            
-                    let isNotSimilar = false;
-                    Object.keys(formattedData[0]).forEach(value => {
-                        if (!Object.keys(formatForm).includes(value)) {
-                            if (!isNotSimilar) {
-                                isNotSimilar = true;
-                            }
-                        }
-                    });
-            
-                    setUploadedFile(fileData);
-            
-                    if (isNotSimilar) {
-                        setUploadedData([]);
-                        setLoadingReadFormat('fetched');
-                        document.getElementById(modal).close();
-                        return Swal.fire({
-                            title: 'Gagal',
-                            icon: 'error',
-                            text: 'Terdapat kolom yang tidak sesuai!'
-                        }).then(() => {
-                            document.getElementById(modal).showModal();
-                        });
-                    }
-                    
-                    setIsUploadedDataValid(true)
-                    setUploadedData(formattedData);
-                    setLoadingReadFormat('fetched');
-                },
-                error: async (error, file) => {
-                    console.log(error);
-                    console.log(file);
-                    setUploadedData([]);
-                    setLoadingReadFormat('fetched');
-                    return Swal.fire({
-                        title: 'Gagal',
-                        icon: 'error',
-                        text: 'Terdapat error disaat sedang memproses data'
-                    }).then(() => {
-                        document.getElementById(modal).showModal();
-                    });
-                }
-            });
-        }
-    }
-
-    const readXLSXFile = async file => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.onload = e => {
-                const datas = new Uint8Array(e.target.result)
-                const workbook = XLSX.read(datas, { type: 'array' })
-                const worksheet = workbook.Sheets[namaSheet]
-                const records = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-                if(typeof(worksheet) === 'undefined') {
-                    reject({
-                        success: false,
-                        message: 'Sheet tidak ada!'
-                    })
-                }
-
-                if(records.length > 1) {
-                    const columns = records[0]
-                    const dataObjects = records.slice(1).map((row, index) => {
-                        if(row.length > 0) {
-                            let obj = {}
-                            columns.forEach((column, index) => {
-                                const newColumn = column.toLowerCase()
-
-                                if(newColumn === 'nama_mapel') {
-                                    obj[newColumn] = row[index]
-                                }
-
-                                if(newColumn === 'kategori_mapel') {
-                                    obj[newColumn] = row[index]
-                                }
-                            })
-                            return obj
-                        }else{
-                            return null
-                        }
-                    }).filter(obj => obj !== null)
-                    resolve({
-                        success: true,
-                        message: 'Sheet ditemukan!',
-                        data: dataObjects
-                    })
-                }else{
-                    resolve({
-                        success: true,
-                        message: 'Sheet ditemukan!',
-                        data: []
-                    })
-                }
-            }
-
-            reader.onerror = reject
-
-            reader.readAsArrayBuffer(file)
         })
+
+
     }
 
     return (
@@ -610,7 +470,7 @@ export default function MataPelajaranPage() {
                                 </form>
                             </div>
                         </dialog>
-                        {/* <button type="button" onClick={() => document.getElementById('import_mapel').showModal()} className="w-full md:w-fit px-3 py-2 rounded border dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex justify-center items-center gap-3 font-medium ease-out duration-300">
+                        <button type="button" onClick={() => document.getElementById('import_mapel').showModal()} className="w-full md:w-fit px-3 py-2 rounded border dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex justify-center items-center gap-3 font-medium ease-out duration-300">
                             <FontAwesomeIcon icon={faDownload} className="w-3 h-3 text-inherit opacity-70" />
                             Import
                         </button>
@@ -625,102 +485,29 @@ export default function MataPelajaranPage() {
                                     File harus <span className="opacity-100">.xlsx</span> atau .csv
                                 </p>
                                 <hr className="my-1 opacity-0" />
-                                <input type="file" className="file-input file-input-ghost file-input-bordered file-input-sm w-full" />
-                                <hr className="my-1 opacity-0" />
-                                <div className="flex items-center gap-2">
-                                    <button type="button" className="px-3 py-2 flex items-center justify-center w-full md:w-fit gap-3 rounded-md bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
-                                        <FontAwesomeIcon icon={faDownload} className="w-3 h-3 text-inherit" />
-                                        Import
-                                    </button>
-                                    <button type="button" className="px-3 py-2 flex items-center justify-center w-full md:w-fit gap-3 rounded-md bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
-                                        <FontAwesomeIcon icon={faXmark} className="w-3 h-3 text-inherit" />
-                                        Batal
-                                    </button>
-                                </div>
-                                <div className="space-y-1 my-5 dark:opacity-10">
-                                    <hr />
-                                    <hr />
-                                </div>
-                                <div className="divide-y dark:divide-zinc-800">
-                                    <div className="flex flex-col md:flex-row  px-5 py-3 md:items-center gap-1">
-                                        <p className="w-full md:w-1/3 opacity-60">
-                                            File yang digunakan
-                                        </p>
-                                        <p className="w-full md:w-2/3">
-                                            .XLSX
-                                        </p>
+                                <form onSubmit={e => submitImportFile(e, 'import_mapel')}>
+                                    <input type="file" required onChange={e => handleChangeFile(e.target.files[0])} className="file-input file-input-ghost file-input-bordered file-input-sm w-full" />
+                                    <hr className="my-2 opacity-0" />
+                                    <select value={namaSheet} onChange={e => setNamaSheet(e.target.value)} className="px-3 py-2 rounded-md border dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
+                                        <option value="" disabled>-- Pilih Sheet --</option>
+                                        {listSheet.map((value, index) => (
+                                            <option key={index} value={value}>{value}</option>
+                                        ))}
+                                    </select>
+                                    <hr className="my-2 opacity-0" />
+                                    <div className="flex items-center gap-2">
+                                        <button type="submit" className="px-3 py-2 flex items-center justify-center w-full md:w-fit gap-3 rounded-md bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
+                                            <FontAwesomeIcon icon={faDownload} className="w-3 h-3 text-inherit" />
+                                            Import
+                                        </button>
+                                        <button type="button" className="px-3 py-2 flex items-center justify-center w-full md:w-fit gap-3 rounded-md bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
+                                            <FontAwesomeIcon icon={faXmark} className="w-3 h-3 text-inherit" />
+                                            Batal
+                                        </button>
                                     </div>
-                                    <div className="flex flex-col md:flex-row px-5 py-3  md:items-center gap-1">
-                                        <p className="w-full md:w-1/3 opacity-60">
-                                            Jumlah Data
-                                        </p>
-                                        <p className="w-full md:w-2/3">
-                                            100 baris
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-col md:flex-row px-5 py-3  md:items-center gap-1">
-                                        <p className="w-full md:w-1/3 opacity-60">
-                                            Kolom
-                                        </p>
-                                        <div className="w-full md:w-2/3">
-                                            <button type="button" className="hover:underline underline md:no-underline">
-                                                Lihat Kolom disini
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col md:flex-row px-5 py-3  md:items-center gap-1">
-                                        <p className="w-full md:w-1/3 opacity-60">
-                                            Format untuk Import
-                                        </p>
-                                        <div className="w-full md:w-2/3">
-                                            <button type="button" className="hover:underline underline md:no-underline">
-                                                Unduh Format disini
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="space-y-1 my-5 dark:opacity-10">
-                                    <hr />
-                                    <hr />
-                                </div>
-                                <button type="button" className="px-3 py-2 flex items-center justify-center w-full md:w-fit gap-3 rounded-md bg-green-500 hover:bg-green-400 text-white  dark:bg-green-500 dark:hover:bg-green-600">
-                                    <FontAwesomeIcon icon={faSave} className="w-3 h-3 text-inherit" />
-                                    Simpan
-                                </button>
-                                <hr className="my-1 opacity-0" />
-                                <div className="space-y-2">
-                                    <div className="flex gap-5 items-center">
-                                        <div className="flex items-center gap-2">
-                                            <FontAwesomeIcon icon={faSpinner} className="w-3 h-3 text-zinc-500 animate-spin" />
-                                           
-                                        </div>
-                                        <FontAwesomeIcon icon={faArrowRight} className="w-2 h-2 text-zinc-500" /> 
-                                        <p>
-                                            Data dari 1 sampai 50
-                                        </p>
-                                    </div>
-                                    <div className="flex gap-5 items-center">
-                                        <div className="flex items-center gap-2">
-                                            <FontAwesomeIcon icon={faCheckCircle} className="w-3 h-3 text-green-500" />
-                                        </div>
-                                        <FontAwesomeIcon icon={faArrowRight} className="w-2 h-2 text-inherit opacity-50" /> 
-                                        <p>
-                                            Data dari 1 sampai 50
-                                        </p>
-                                    </div>
-                                    <div className="flex gap-5 items-center">
-                                        <div className="flex items-center gap-2">
-                                            <FontAwesomeIcon icon={faXmarkCircle} className="w-3 h-3 text-red-500" />
-                                        </div>
-                                        <FontAwesomeIcon icon={faArrowRight} className="w-2 h-2 text-inherit opacity-50" /> 
-                                        <p>
-                                            Data dari 1 sampai 50
-                                        </p>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
-                        </dialog> */}
-                        
+                        </dialog>
                     </div>
                     {dataMapel.length > 0 && (
                         <>

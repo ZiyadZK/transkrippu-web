@@ -53,3 +53,51 @@ export const xlsx_export = async (type, dataArr, fileName = 'Data', { header, sh
         URL.revokeObjectURL(url);
     }
 }
+
+export const xlsx_getData = async (file, namaSheet) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = e => {
+            const datas = new Uint8Array(e.target.result)
+            const workbook = XLSX.read(datas, { type: 'array' })
+            const worksheet = workbook.Sheets[namaSheet]
+            const records = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+            if(typeof(worksheet) === 'undefined') {
+                reject({
+                    success: false,
+                    message: 'Sheet tidak ada!'
+                })
+            }
+
+            if(records.length > 1) {
+                const columns = records[0]
+                const dataObjects = records.slice(1).map((row, index) => {
+                    if(row.length > 0) {
+                        let obj = {}
+                        columns.forEach((column, index) => {
+                            obj[column] = typeof(row[index]) !== 'undefined' ? row[index] : ''
+                        })
+                        return obj
+                    }else{
+                        return null
+                    }
+                }).filter(obj => obj !== null)
+                resolve({
+                    success: true,
+                    message: 'Sheet ditemukan',
+                    data: dataObjects
+                })
+            }else{
+                resolve({
+                    success: true,
+                    message: 'Sheet ditemukan',
+                    data: []
+                })
+            }
+        }
+
+        reader.onerror = reject
+
+        reader.readAsArrayBuffer(file)
+    })
+}

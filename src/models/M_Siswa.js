@@ -8,6 +8,6 @@ export const M_Siswa_getAll = async () => {
     return {
         success: response.success,
         message: response.message,
-        data: response.data.data
+        data: response.data
     }
 }
